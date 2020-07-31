@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  database:
+    ports:
+      - 33080:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - './volumes/mysql:/var/lib/mysql'
+      - './mysql-initd.sql:/docker-entrypoint-initdb.d/init.sql'
+
+  backend:
+    ports:
+      - 80:3000
+    command: npm run start:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/srv/www/mythology/src:rw
+      - ./migrations:/srv/www/api.joinsizigi.com/migrations:rw
+      - ./package.json:/srv/www/mythology/package.json:rw

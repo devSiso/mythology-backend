@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  database:
+    container_name: mythology-database
+    image: mysql:8
+    restart: always
+    command: --max_allowed_packet=32505856 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=mythology
+
+  backend:
+    container_name: mythology-backend
+    image: mythology-backend:latest
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    environment:
+     - NODE_ENV=production
+    volumes:
+      - ./src:/srv/www/mythology/src:rw
+      - ./migrations:/srv/www/api.joinsizigi.com/migrations:rw
+      - ./package.json:/srv/www/mythology/package.json:rw
+  
